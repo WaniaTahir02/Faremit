@@ -7,7 +7,7 @@ import logo from "../assets/logo.svg";
 export default function Signup() {
   const navigate = useNavigate();
 
-  // This function will be passed to the SignupForm component
+
   const handleSignupSuccess = () => {
     navigate("/verify-email");
   };

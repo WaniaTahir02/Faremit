@@ -1,26 +1,35 @@
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import leftImg from "../assets/signup/signup-img-2.png";
 import rightImg from "../assets/signup/signup-img-1.png";
 import logo from "../assets/logo.svg";
 import icon from "../assets/signup/alert-icon.png";
-import vIcon from "../assets/signup/v-icon.png"; // Add a success icon
+import vIcon from "../assets/signup/v-icon.png";
+import contentImg from "../assets/Content.png";
 
 export default function Signin() {
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
-  const [showReset, setShowReset] = useState(false); // toggle reset form
+  const [showReset, setShowReset] = useState(false); 
   const [resetEmail, setResetEmail] = useState("");
   const [resetSent, setResetSent] = useState(false);
-  const [showToast, setShowToast] = useState(false); // for toast popup
+  const [showToast, setShowToast] = useState(false);
+  const [toastType, setToastType] = useState(""); 
+  const [showChangePassword, setShowChangePassword] = useState(false);
 
-  // Password validation
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [changePasswordError, setChangePasswordError] = useState("");
+
+  const navigate = useNavigate();
+
   const validatePassword = (password) => {
-    return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/.test(
-      password
-    );
+    return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/.test(password);
   };
 
+  // Login submit
   const handleLoginSubmit = (e) => {
     e.preventDefault();
     if (!validatePassword(password)) {
@@ -33,17 +42,40 @@ export default function Signin() {
     console.log("Password valid — continue login");
   };
 
+  // Reset Password Submission
   const handleResetSubmit = (e) => {
     e.preventDefault();
     if (!resetEmail) return;
 
-    // TODO: send reset email API call
     setResetSent(true);
+    setToastType("reset");
     setShowToast(true);
 
-    // Auto hide toast after 5 seconds
     setTimeout(() => {
       setShowToast(false);
+      setShowChangePassword(true);
+    }, 5000);
+  };
+
+  const handleChangePassword = (e) => {
+    e.preventDefault();
+    if (!validatePassword(newPassword)) {
+      setChangePasswordError(
+        "Password must be minimum 8 characters and contain one uppercase, one lowercase, one number, and one special character."
+      );
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setChangePasswordError("Passwords do not match.");
+      return;
+    }
+    setChangePasswordError("");
+    setToastType("changed");
+    setShowToast(true);
+
+    setTimeout(() => {
+      setShowToast(false);
+      navigate("/signin");
     }, 5000);
   };
 
@@ -63,151 +95,134 @@ export default function Signin() {
       {/* FORM SECTION */}
       <div className="flex flex-col justify-center items-center md:items-start px-6 md:px-20 py-12 min-h-screen md:min-h-0 relative z-10">
         <div className="w-full max-w-sm">
-          {!showReset ? (
-            <>
-              {/* LOGIN FORM */}
-              <h1 className="text-2xl md:text-3xl font-semibold text-[#0C0F2C] mb-1">
-                Welcome back
-              </h1>
 
+          {/* LOGIN FORM */}
+          {!showReset && !showChangePassword && (
+            <>
+              <h1 className="text-2xl md:text-3xl font-semibold text-[#0C0F2C] mb-1">Welcome back</h1>
               <p className="mb-6 text-sm md:text-base text-gray-600">
                 New to Faremit?{" "}
-                <Link to="/signup" className="text-purple-500 underline">
-                  Sign up
-                </Link>
+                <Link to="/signup" className="text-purple-500 underline">Sign up</Link>
               </p>
-
               <form onSubmit={handleLoginSubmit} className="flex flex-col gap-2">
-                <label className="text-sm font-medium text-gray-700">
-                  Email address
-                </label>
-                <input
-                  type="email"
-                  placeholder="Enter email"
+                <label className="text-sm font-medium text-gray-700">Email address</label>
+                <input type="email" placeholder="Enter email"
                   className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400"
                   required
                 />
-
-                <label className="text-sm font-medium text-gray-700">
-                  Password
-                </label>
-
-                <input
-                  type="password"
-                  placeholder="Enter password"
+                <label className="text-sm font-medium text-gray-700">Password</label>
+                <input type="password" placeholder="Enter password"
                   value={password}
-                  onChange={(e) => {
-                    setPassword(e.target.value);
-                    setPasswordError("");
-                  }}
+                  onChange={(e) => { setPassword(e.target.value); setPasswordError(""); }}
                   className={`border rounded-md px-4 py-2 focus:outline-none focus:ring-2 ${
-                    passwordError
-                      ? "border-red-500 focus:ring-red-400"
-                      : "border-gray-300 focus:ring-purple-400"
+                    passwordError ? "border-red-500 focus:ring-red-400" : "border-gray-300 focus:ring-purple-400"
                   }`}
                   required
                 />
-
-                {/* INLINE ERROR (icon + text) */}
                 {passwordError && (
                   <div className="flex items-start gap-2 mt-1">
                     <img src={icon} alt="alert" className="w-4 h-4 mt-[2px]" />
                     <p className="text-sm text-gray-600 leading-snug">{passwordError}</p>
                   </div>
                 )}
-
-                <button
-                  type="submit"
-                  className="mt-4 bg-[#554ADF] text-white py-2 rounded-md transition hover:bg-[#4433bb]"
-                >
-                  Sign In
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setShowReset(true)}
-                  className="text-sm text-purple-500 mt-2 underline"
-                >
-                  Forgot password?
-                </button>
+                <button type="submit" className="mt-4 bg-[#554ADF] text-white py-2 rounded-md transition hover:bg-[#4433bb]">Sign In</button>
+                <button type="button" onClick={() => setShowReset(true)} className="text-sm text-purple-500 mt-2 underline">Forgot password?</button>
               </form>
             </>
-          ) : (
+          )}
+
+          {/* RESET EMAIL FORM */}
+          {showReset && !showChangePassword && (
             <>
-              {/* RESET PASSWORD FORM */}
-              <button
-                onClick={() => setShowReset(false)}
-                className="text-sm text-gray-500 mb-4 underline"
-              >
-                &larr; Back
-              </button>
-
-              <h1 className="text-2xl md:text-3xl font-semibold text-[#0C0F2C] mb-2">
-                Reset your password
-              </h1>
-
-              <p className="mb-6 text-sm md:text-base text-gray-600">
-                Enter the email address registered to your account
-              </p>
-
-              {!resetSent ? (
+              <button onClick={() => setShowReset(false)} className="text-sm text-bold mb-4">&larr; Back</button>
+              {!resetSent && (
                 <form onSubmit={handleResetSubmit} className="flex flex-col gap-2">
-                  <label className="text-sm font-medium text-gray-700">
-                    Email address
-                  </label>
-                  <input
-                    type="email"
-                    placeholder="Enter your email"
-                    value={resetEmail}
+                  <label className="text-sm font-medium text-gray-700">Email address</label>
+                  <input type="email" placeholder="Enter your email" value={resetEmail}
                     onChange={(e) => setResetEmail(e.target.value)}
                     className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400"
                     required
                   />
-
-                  <button
-                    type="submit"
-                    className="mt-4 bg-[#554ADF] text-white py-2 rounded-md transition hover:bg-[#4433bb]"
-                  >
-                    Reset Password
-                  </button>
+                  <button type="submit" className="mt-4 bg-[#554ADF] text-white py-2 rounded-md transition hover:bg-[#4433bb]">Reset Password</button>
                 </form>
-              ) : (
-                <p className="text-green-600 font-medium mb-4">
-               
-                </p>
               )}
             </>
           )}
+
+          {/* CHANGE PASSWORD FORM */}
+          {showChangePassword && (
+            <>
+              <h1 className="text-2xl md:text-3xl font-semibold text-[#0C0F2C] mb-1 text-center">Change Password</h1>
+              
+              <form onSubmit={handleChangePassword} className="flex flex-col gap-4">
+                <div className="relative">
+                  <input type={showNewPassword ? "text" : "password"} placeholder="New Password" value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400"
+                    required
+                  />
+                  <button type="button" className="absolute right-3 top-2.5 text-gray-500"
+                    onClick={() => setShowNewPassword(!showNewPassword)}>
+                   
+                  </button>
+
+                </div>
+                <div className="relative">
+                  <input type={showConfirmPassword ? "text" : "password"} placeholder="Confirm Password" value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400"
+                    required
+                  />
+                  <button type="button" className="absolute right-3 top-2.5 text-gray-500"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
+                   
+                  </button>
+                </div>
+                {changePasswordError && <p className="text-sm text-red-500">{changePasswordError}</p>}
+                <button type="submit" className="mt-2 bg-[#554ADF] text-white py-2 rounded-md transition hover:bg-[#4433bb]">Save</button>
+             <p className="text-sm text-gray-600 mb-6 text-center">
+                You'll be redirected to Sign In after saving your new password.
+              </p>
+              </form>
+            </>
+          )}
+
         </div>
       </div>
 
       {/* RIGHT IMAGE */}
       <div className="absolute top-0 right-0 z-0">
-        <img
-          src={rightImg}
-          alt="Right visual"
-          className="object-contain w-55 sm:w-36 md:w-auto"
-        />
+        <img src={rightImg} alt="Right visual" className="object-contain w-55 sm:w-36 md:w-auto" />
       </div>
 
-      {showToast && (
+      {/* TOAST */}
+      {showToast && toastType === "reset" && (
         <div className="fixed top-6 right-6 z-50 bg-[#F7F6FD] shadow-md rounded-xl px-5 py-4 w-80 flex items-start gap-3 animate-slide-in">
-          <img src={vIcon} alt="success icon" className="w-8 h-8" />
-          <div>
-            <h3 className="font-semibold text-[#0C0F2C] mb-1">Password Changed</h3>
-            <p className="text-sm text-gray-600">
-              Your password has successfully been changed. You will be redirected to the sign in page.{" "}
-              <span
-                onClick={() => window.location.reload()} 
-                className="underline cursor-pointer"
-              >
-                Click here 
-              </span>
-              if nothing happens.
-            </p>
+          <img src={vIcon} alt="success icon" className="w-8 h-8 mt-1" />
+          <div className="flex-1">
+            <img src={contentImg} alt="Password reset sent" className="w-full h-auto" />
           </div>
         </div>
       )}
+
+      {showToast && toastType === "changed" && (
+        <div
+          className="fixed top-6 right-6 z-50 bg-[#F7F6FD] shadow-md rounded-xl px-5 py-4 w-80 animate-slide-in cursor-pointer"
+          onClick={() => navigate("/signin")}
+        >
+          <div className="flex items-start gap-3">
+            <img src={vIcon} alt="success icon" className="w-8 h-8 mt-1" />
+            <div className="flex-1">
+              <h2 className="font-semibold text-gray-800 mb-1">Password Changed</h2>
+              <p className="text-sm text-gray-600">
+                Your password has successfully been changed. You will be redirected to the sign in page.{" "}
+                <span className="underline cursor-pointer">Click here if nothing happens.</span>
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
