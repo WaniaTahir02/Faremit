@@ -7,9 +7,8 @@ import logo from "../assets/logo.svg";
 export default function Signup() {
   const navigate = useNavigate();
 
-
   const handleSignupSuccess = () => {
-    navigate("/verify-email");
+    navigate("/dashboard"); 
   };
 
   return (
@@ -44,7 +43,6 @@ export default function Signup() {
             </a>
           </p>
 
-          {/* Pass the handler to the form */}
           <SignupForm onSuccess={handleSignupSuccess} />
         </div>
       </div>

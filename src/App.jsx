@@ -14,14 +14,18 @@ import Footer from "./sections/Footer";
 import Signup from "./pages/Signup";
 import Signin from "./pages/Signin";
 import VerifyEmail from "./pages/VerifyEmail";
-import VerifyPhoneNo from "./pages/VerifyPhoneNo"; // Phone number page
+import VerifyPhoneNo from "./pages/VerifyPhoneNo";
+import Dashboard from "./pages/Dashboard";
+
+
+
 
 function App() {
   const location = useLocation();
 
   // Pages where Navbar + background should NOT appear
   // Make sure the route matches exactly what you navigate to
-  const authPages = ["/signup", "/signin", "/verify-email", "/verify-phone"];
+  const authPages = ["/signup", "/signin", "/verify-email", "/verify-phone","/dashboard"];
   const showLayout = !authPages.includes(location.pathname);
 
   return (
@@ -65,11 +69,12 @@ function App() {
             }
           />
 
-          {/* Auth Pages */}
+         
           <Route path="/signup" element={<Signup />} />
           <Route path="/signin" element={<Signin />} />
           <Route path="/verify-email" element={<VerifyEmail />} />
-          <Route path="/verify-phone" element={<VerifyPhoneNo />} /> {/* exact match */}
+          <Route path="/verify-phone" element={<VerifyPhoneNo />} />
+          <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
       </div>
     </div>

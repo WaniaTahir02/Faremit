@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+ import React, { useState, useRef, useEffect } from "react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 
 import GBPflag from "../assets/hero-img/GBP flag.png";

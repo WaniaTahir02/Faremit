@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import Button from "./Button";
 import HeroForm from "./HeroForm";
 import line from "../assets/hero-img/line.svg";
@@ -8,9 +9,11 @@ import premier from "../assets/hero-img/logo1.svg";
 import mtn from "../assets/hero-img/logo2.svg";
 import mpesa from "../assets/hero-img/logo3.svg";
 import swish from "../assets/hero-img/logo4.svg";
-import evc from "../assets/hero-img/logo5.svg"
+import evc from "../assets/hero-img/logo5.svg";
 
 const Hero = () => {
+  const navigate = useNavigate(); // ✅ initialize navigate
+
   return (
     <section className="relative pt-32 md:pt-44 pb-0 overflow-hidden">
       <div className="max-w-[1232px] mx-auto px-4 flex flex-col items-center gap-16">
@@ -40,19 +43,20 @@ const Hero = () => {
 
             {/* Download Button */}
             <div className="w-full sm:w-auto flex justify-center">
-             <Button
-  icon={download}
-  iconPosition="right"
-  iconSize={{ w: 32, h: 32 }} // increase icon size
-  text="Download app"
-  className="bg-[#FFD8C1] text-orange-500 px-6 py-3 whitespace-nowrap"
-/>
+              <Button
+                icon={download}
+                iconPosition="right"
+                iconSize={{ w: 32, h: 32 }}
+                text="Download app"
+                className="bg-[#FFD8C1] text-orange-500 px-6 py-3 whitespace-nowrap"
+              />
             </div>
 
-            {/* Get Started Button */}
+            {/* ✅ Get Started Button */}
             <div className="w-full sm:w-auto flex justify-center">
               <Button
                 text="Get Started Now →"
+                onClick={() => navigate("/signup")} // ✅ redirect to signup
                 className="bg-orange-500 text-white hover:bg-orange-600 px-6 py-4 whitespace-nowrap"
               />
             </div>
@@ -63,7 +67,6 @@ const Hero = () => {
         {/* Image + Form Card */}
         <div className="w-full bg-[#FEF2F0] border border-dashed border-orange-500 rounded-[32px] px-6 md:px-12 py-14 flex flex-col md:flex-row gap-14 items-center">
 
-          {/* Left Image (hide on mobile) */}
           <div className="flex-1 justify-center hidden md:flex">
             <img
               src={flag}
@@ -72,7 +75,6 @@ const Hero = () => {
             />
           </div>
 
-          {/* Right Form (always visible) */}
           <div className="flex-1 w-full max-w-md">
             <HeroForm />
           </div>

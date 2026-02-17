@@ -1,11 +1,13 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import pattern from "../assets/pattern.svg";
 import Button from "./Button";
 
 const Experience = () => {
+  const navigate = useNavigate(); // ✅ initialize navigation
+
   return (
     <section className="py-24 bg-[#FFF9F6]">
-      {/* EXACT SAME WIDTH AS FAQ */}
       <div className="max-w-[1232px] mx-auto px-4">
         <div className="relative rounded-3xl overflow-hidden px-6 py-20 text-center bg-[#FF5A1F]">
 
@@ -27,6 +29,7 @@ const Experience = () => {
             <div className="mt-8 flex justify-center">
               <Button
                 text="Sign Up Now"
+                onClick={() => navigate("/signup")} // ✅ redirect to signup
                 className="bg-white text-[#FF5A1F] hover:bg-gray-100 px-8 py-3 font-semibold"
               />
             </div>

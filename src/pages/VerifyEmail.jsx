@@ -12,14 +12,12 @@ export default function VerifyEmail() {
 
   const userEmail = "ekem@gmail.com";
 
-  // Show toast on load
   useEffect(() => {
     setShowToast(true);
     const toastTimer = setTimeout(() => setShowToast(false), 5000);
     return () => clearTimeout(toastTimer);
   }, []);
 
-  // Countdown
   useEffect(() => {
     if (timer > 0) {
       const countdown = setTimeout(() => setTimer(timer - 1), 1000);
@@ -32,7 +30,6 @@ export default function VerifyEmail() {
     setShowHelpModal(false);
   };
 
-  // Close modal with ESC
   useEffect(() => {
     const handleEsc = (e) => {
       if (e.key === "Escape") setShowHelpModal(false);
@@ -41,7 +38,6 @@ export default function VerifyEmail() {
     return () => window.removeEventListener("keydown", handleEsc);
   }, []);
 
-  // Lock scroll when modal open
   useEffect(() => {
     if (showHelpModal) {
       document.body.style.overflow = "hidden";
@@ -189,7 +185,6 @@ export default function VerifyEmail() {
 )}
 
 
-      {/* Animations */}
       <style>{`
         @keyframes slide-in {
           0% { transform: translateX(100%); opacity: 0; }
