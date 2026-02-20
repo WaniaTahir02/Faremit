@@ -7,59 +7,123 @@ import recipientsIcon from "../assets/dashboard/Recipients.png";
 import transferIcon from "../assets/dashboard/Transfers.png";
 import settingsIcon from "../assets/dashboard/setting.png";
 import bellIcon from "../assets/dashboard/bell.png";
+import menuIcon from "../assets/dashboard/menu.png";
 
-
-// ✅ Flash icon for rate line
-import flashIcon from "../assets/dashboard/flash.png";
+import Home from "../components/dashboard/Home";
+import Recipients from "../components/dashboard/Recipients";
+import Transfers from "../components/dashboard/Transfers";
+import Payment from "../components/dashboard/Payment";
+import Settings from "../components/dashboard/Settings";
 
 export default function Dashboard() {
-  const [showDropdown, setShowDropdown] = useState(false);
+  const [activePage, setActivePage] = useState("home");
+
+  const [showMobileDropdown, setShowMobileDropdown] = useState(false);
+  const [showDesktopDropdown, setShowDesktopDropdown] = useState(false);
+
+  const renderPage = () => {
+    switch (activePage) {
+      case "home":
+        return <Home />;
+      case "recipients":
+        return <Recipients />;
+      case "transfers":
+        return <Transfers />;
+      case "payment":
+        return <Payment />;
+      case "settings":
+        return <Settings />;
+      default:
+        return <Home />;
+    }
+  };
+
+  const navItems = [
+    { label: "Home", icon: homeIcon, key: "home" },
+    { label: "Recipients", icon: recipientsIcon, key: "recipients" },
+    { label: "Transfers", icon: transferIcon, key: "transfers" },
+    { label: "Payment", icon: paymentIcon, key: "payment" },
+    { label: "Settings", icon: settingsIcon, key: "settings" },
+  ];
 
   return (
     <div className="flex min-h-screen bg-gray-100">
-
-      {/* ================= SIDEBAR ================= */}
-      <div className="w-64 bg-white shadow-sm border-r-1   border-[#ECEAEE] flex flex-col justify-between">
+      {/* DESKTOP SIDEBAR */}
+      <aside className="hidden md:flex flex-col w-64 bg-white shadow-sm border-r border-[#ECEAEE] p-6 fixed h-full">
         <div>
-          {/* Sidebar Header with Logo */}
-          <div className="px-6 py-6 flex items-center">
+          <div className="mb-10">
             <img src={logo} alt="Faremit Logo" className="h-20 w-40 object-contain" />
-            <div className="ml-3">
-             
-            </div>
           </div>
 
-          {/* Sidebar Items */}
-          <div className="mt-6 space-y-6 px-6">
-            <SidebarItem icon={homeIcon} label="Home" active />
-            <SidebarItem icon={recipientsIcon} label="Recipients" />
-            <SidebarItem icon={transferIcon} label="Transfers" />
-            <SidebarItem icon={paymentIcon} label="Payment" />
-            <SidebarItem icon={settingsIcon} label="Settings" />
+          <div className="space-y-6">
+            {navItems.map((item) => (
+              <SidebarItem
+                key={item.key}
+                icon={item.icon}
+                label={item.label}
+                active={activePage === item.key}
+                onClick={() => setActivePage(item.key)}
+              />
+            ))}
           </div>
         </div>
-      </div>
+      </aside>
 
-      {/* ================= MAIN CONTENT ================= */}
-      <div className="flex-1 flex flex-col">
+      {/* MAIN CONTENT */}
+      <div className="flex-1 flex flex-col md:ml-64 relative">
+        {/* HEADER */}
+        <header className="flex justify-between items-center bg-white px-4 py-4 border-b border-[#ECEAEE] md:px-10">
+          {/* Mobile logo */}
+          <img src={logo} alt="Faremit Logo" className="h-12 w-auto md:hidden" />
 
-        {/* ===== TOP HEADER ===== */}
-        <div className="flex justify-end items-center px-10 py-4 bg-white border-b border-[#ECEAEE] relative">
-          <div className="mr-6 cursor-pointer">
-    <img src={bellIcon} alt="Notifications" className="w-9 h-9" />
-  </div>
-          <div
-            className="flex items-center gap-2 cursor-pointer relative"
-            onClick={() => setShowDropdown(!showDropdown)}
-          >
-            <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center font-semibold">
-              AB
+          {/* Mobile Menu Icon */}
+          <div className="relative md:hidden">
+            <img
+              src={menuIcon}
+              alt="Menu"
+              className="w-10 h-10 cursor-pointer"
+              onClick={() => setShowMobileDropdown(!showMobileDropdown)}
+            />
+
+            {/* MOBILE DROPDOWN */}
+            {showMobileDropdown && (
+              <div className="absolute right-0 mt-2 w-40 bg-white shadow-lg rounded-lg py-2 z-50">
+                <button className="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm">
+                  Profile
+                </button>
+                <button className="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm">
+                  Settings
+                </button>
+                <button className="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm text-red-500">
+                  Logout
+                </button>
+              </div>
+            )}
+          </div>
+        </header>
+
+        {/* DESKTOP TOP RIGHT (Bell + AB with dropdown) */}
+        <div className="hidden md:flex justify-end items-center bg-white px-6 py-3 border-b border-gray-200">
+          <img
+            src={bellIcon}
+            alt="Notifications"
+            className="w-9 h-9 cursor-pointer mr-4"
+          />
+
+          <div className="relative">
+            <div
+              className="flex items-center gap-2 cursor-pointer"
+              onClick={() => setShowDesktopDropdown(!showDesktopDropdown)}
+            >
+              <div className="w-9 h-9 rounded-full bg-[#EEEDFC] flex items-center justify-center font-semibold">
+                AB
+              </div>
+              <span className="text-sm">▼</span>
             </div>
 
-            <span className="text-sm">▼</span>
-
-            {showDropdown && (
-              <div className="absolute right-0 top-12 w-40 bg-white shadow-lg rounded-lg py-2">
+            {/* DESKTOP DROPDOWN */}
+            {showDesktopDropdown && (
+              <div className="absolute right-0 mt-2 w-40 bg-white shadow-lg rounded-lg py-2 z-50">
                 <button className="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm">
                   Profile
                 </button>
@@ -74,108 +138,43 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* ===== RATES LINE ===== */}
-        <div className="bg-white px-10 py-4 border-b border-1px border-[#ECEAEE] text-sm text-gray-700 flex gap-8 items-center">
-          <Rate text="1 GBP = 1,468.29 NGN" />
-          <Rate text="1 USD = 1,146.72 NGN" />
-          <Rate text="1 EUR = 1,236.29 NGN" />
-          <Rate text="1 CAD = 850.29 NGN" />
-          <Rate text="1 AUD = 750.23 NGN" />
-        </div>
+        {/* PAGE CONTENT */}
+        <main className="flex-1 w-full pb-16 md:pb-0">
+          {renderPage()}
+        </main>
 
-        {/* ===== CONTENT AREA ===== */}
-        <div className="flex gap-8 p-10 bg-[#FAFAFB]">
-
-          {/* LEFT BOX */}
-          <div className="bg-white rounded-xl shadow-md p-6 w-[450px]">
-
-            <div className="bg-[#2F2A6B] text-white rounded-lg p-4 text-center font-semibold">
-              <p>Exchange Rate</p>
-              <p className="mt-1">1GBP = 1450.00 NGN</p>
+        {/* MOBILE BOTTOM NAV (ALWAYS STICKY) */}
+        <nav className="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 flex justify-around py-2 md:hidden z-40">
+          {navItems.map((item) => (
+            <div
+              key={item.key}
+              className={`flex flex-col items-center text-xs cursor-pointer ${
+                activePage === item.key
+                  ? "text-[#F15A29] font-semibold"
+                  : "text-gray-600"
+              }`}
+              onClick={() => setActivePage(item.key)}
+            >
+              <img src={item.icon} alt={item.label} className="w-6 h-6 mb-1" />
+              <span className="text-[10px]">{item.label}</span>
             </div>
-
-            <div className="mt-6">
-              <label className="text-sm text-gray-600">You send</label>
-              <input
-                type="number"
-                defaultValue={0}
-                className="w-full border rounded-md px-3 py-2 mt-1"
-              />
-            </div>
-
-            <div className="mt-4">
-              <label className="text-sm text-gray-600">Payment Method</label>
-              <select className="w-full border rounded-md px-3 py-2 mt-1">
-                <option>Bank Transfer</option>
-              </select>
-            </div>
-
-            <div className="flex justify-between mt-4 text-sm text-gray-600">
-              <p>Fee: 2.99 GBP</p>
-              <p>Total Payable: 2.99 GBP</p>
-            </div>
-
-            <div className="mt-4">
-              <label className="text-sm text-gray-600">Recipient gets</label>
-              <input
-                type="number"
-                defaultValue={0}
-                className="w-full border rounded-md px-3 py-2 mt-1"
-              />
-            </div>
-          </div>
-
-          {/* RIGHT BOX */}
-          <div className="bg-white rounded-xl shadow-md p-6 w-[450px]">
-
-            <h2 className="font-semibold mb-3">Select a NGN recipient</h2>
-
-            <input
-              type="text"
-              placeholder="Search recipient"
-              className="w-full border rounded-md px-3 py-2"
-            />
-
-            <div className="bg-[#F2F1FA] rounded-lg p-6 mt-4 text-center">
-              <p className="text-sm text-gray-600">
-                You haven’t created any Naira (NGN) recipient
-              </p>
-              <button className="mt-4 bg-[#554ADF] text-white px-6 py-2 rounded-md">
-                Add
-              </button>
-            </div>
-
-            <button className="w-full mt-6 bg-gray-200 text-gray-700 py-3 rounded-md">
-              Send Money
-            </button>
-          </div>
-
-        </div>
+          ))}
+        </nav>
       </div>
     </div>
   );
 }
 
-/* Sidebar Item */
-function SidebarItem({ icon, label, active }) {
+function SidebarItem({ icon, label, active, onClick }) {
   return (
     <div
+      onClick={onClick}
       className={`flex items-center gap-3 cursor-pointer ${
         active ? "text-[#F15A29] font-semibold" : "text-gray-600"
       }`}
     >
       <img src={icon} alt={label} className="w-5 h-5" />
       <span>{label}</span>
-    </div>
-  );
-}
-
-/* Rate Component (NOW USING YOUR FLASH IMAGE) */
-function Rate({ text }) {
-  return (
-    <div className="flex items-center gap-2">
-      <img src={flashIcon} alt="flash" className="w-4 h-4" />
-      <span>{text}</span>
     </div>
   );
 }
